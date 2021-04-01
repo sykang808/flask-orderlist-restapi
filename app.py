@@ -1,130 +1,113 @@
 import os
-import json
+import config
 from flask import Flask
-from flask_restx import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template
-from flask import Flask, request # change
- 
+from flask_restx import Api
+from flask_restx import Resource
+from flask import request # change
+from orderlist import *   
+from json import dumps 
+from flask_cors import CORS, cross_origin
+
 app = Flask(__name__)
 api = Api(app)
+CORS(app, resources={r'*': {'origins': '*'}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
-    os.getenv('DB_USER', 'root'),
-    os.getenv('DB_PASSWORD', '1q2w3e4r'),
-    os.getenv('DB_HOST', '127.0.0.1'),
-    os.getenv('DB_NAME', 'warehouse')
+    os.getenv('DB_USER' , config.DATABASE_CONFIG['DB_USER'] ),
+    os.getenv('DB_PASSWORD', config.DATABASE_CONFIG['DB_PASSWORD']),
+    os.getenv('DB_HOST', config.DATABASE_CONFIG['DB_HOST']),
+    os.getenv('DB_NAME', config.DATABASE_CONFIG['DB_NAME'])
 )
 
 db = SQLAlchemy(app)
 
-
-class Product(db.Model):
-    __tablename__ = 'product'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    description = db.Column(db.String(80))
-    price = db.Column(db.Integer)
-    count = db.Column(db.Integer, nullable=False)
-    def __repr__(self):
-        return '<Product %r>' % self.name
- 
-# create the DB on demand
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
-@api.route('/products')
-class ProductIndex(Resource):
+@api.route('/orderlists')
+class OrderListIndex(Resource):
     def get(self):
         ret = []
-        res = Product.query.all()
-        for product in res:
+        res = db.session.query(OrderList).all()
+        for orderlist in res:
             ret.append(
                 {
-                    'id': product.id,
-                    'name': product.name,
-                    'description': product.description,
-                    'price': product.price,
-                    'count': product.count
+                    'id': orderlist.id,
+                    'customer_id': orderlist.customer_id,
+                    'product_id': orderlist.product_id,
+                    'count': orderlist.count,
+                    'status': orderlist.status
                 }
             )
         return ret, 200
 
-@api.route('/product')
-@api.response(404, "Could not put product")
-class ProductPost(Resource):
+@api.route('/orderlist')
+@api.response(404, "Could not put orderlist")
+class OrderListPost(Resource):
     def post(self):
         data = request.get_json(force=True)
-        product = Product(
-            name = data['name'],
-            description = data['description'],
-            price = data['price'],
-            count = data['count']
+        orderlist = OrderList(
+            customer_id = data['customer_id'],
+            product_id = data['product_id'],
+            count = data['count'],
+            status = data['status']
         )
-        db.session.add(product)
+        db.session.add(orderlist)
         db.session.commit()
         return {
-                'id': product.id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'count': product.count
+                'id': orderlist.id,
+                'customer_id': orderlist.customer_id,
+                'product_id': orderlist.product_id,
+                'count': orderlist.count,
+                'status': orderlist.statuss
             }, 200
 
 
-@api.route('/product/<int:id>')
-@api.response(404, "Could not find product")
+@api.route('/orderlist/<int:id>')
+@api.response(404, "Could not find orderlist")
 @api.param('id', 'The task identifier')
-class ProductItem(Resource):
+class OrderListItem(Resource):
     def get(self, id):
-        product = Product.query.get_or_404(id)
+        orderlist = db.session.query(OrderList).get(id)
         return  {
-                    'id': product.id,
-                    'name': product.name,
-                    'description': product.description,
-                    'price': product.price,
-                    'count': product.count
+                    'id': orderlist.id,
+                    'customer_id': orderlist.customer_id,
+                    'product_id': orderlist.product_id,
+                    'count': orderlist.count,
+                    'status': orderlist.status
                 }, 200
     def patch(self, id):  
-        product = Product.query.get_or_404(id)
+        orderlist = db.session.query(OrderList).get(id)
         data = request.get_json(force=True)
 
-        if 'name' in data:
-            product.name = data['name']
-        if 'description' in data:
-            product.description = data['description']
-        if 'price' in data:
-            product.price = data['price']
+        if 'customer_id' in data:
+            orderlist.name = data['customer_id']
+        if 'product_id' in data:
+            orderlist.description = data['product_id']
         if 'count' in data:
-            product.count = data['count']
-
+            orderlist.count = data['count']
+        if 'status' in data:
+            orderlist.status = data['status']
         db.session.commit()
 
         return  {
-                    'id': product.id,
-                    'name': product.name,
-                    'description': product.description,
-                    'price': product.price,
-                    'count': product.count
+                    'id': orderlist.id,
+                    'customer_id': orderlist.customer_id,
+                    'product_id': orderlist.product_id,
+                    'count': orderlist.count,
+                    'status': orderlist.status
                 }, 200
 
     def delete(self, id):  
-        product = Product.query.get_or_404(id)
-        db.session.delete(product)
+        orderlist = db.session.query(OrderList).get(id)
+        db.session.delete(orderlist)
         db.session.commit()
         return '', 204
 
 @api.route('/')
 class Main(Resource):
     def get(self):
-        return {'status': Product.__tablename__}
+        return {'status': OrderList.__tablename__}
 
-#api.add_resource(Index, '/products')
-#api.add_resource(Main, '/')
-#api.add_resource(Main, '/product')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", port=80,debug=True)
+ 

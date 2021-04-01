@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-control-restapi
+spec:
+  ports:
+    - port: 5050
+      targetPort: 5050
+  selector:
+    app: fleet-infra-flask-control-restapi-c8712815
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-infra-flask-control-restapi-deployment-c8fb5f50
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-infra-flask-control-restapi-c8712815
+  template:
+    metadata:
+      labels:
+        app: fleet-infra-flask-control-restapi-c8712815
+    spec:
+      containers:
+        - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/flask-control-restapi:latest
+          name: app
+          ports:
+            - containerPort: 5050
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-product-restapi
+spec:
+  ports:
+    - port: 5050
+      targetPort: 5050
+  selector:
+    app: fleet-infra-flask-product-restapi-c84ce884
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-infra-flask-product-restapi-deployment-c80ad399
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-infra-flask-product-restapi-c84ce884
+  template:
+    metadata:
+      labels:
+        app: fleet-infra-flask-product-restapi-c84ce884
+    spec:
+      containers:
+        - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/flask-product-restapi:latest
+          name: app
+          ports:
+            - containerPort: 5050
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-user-restapi
+spec:
+  ports:
+    - port: 5050
+      targetPort: 5050
+  selector:
+    app: fleet-infra-flask-user-restapi-c80d6c40
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-infra-flask-user-restapi-deployment-c8b35995
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-infra-flask-user-restapi-c80d6c40
+  template:
+    metadata:
+      labels:
+        app: fleet-infra-flask-user-restapi-c80d6c40
+    spec:
+      containers:
+        - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/flask-user-restapi:latest
+          name: app
+          ports:
+            - containerPort: 5050
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-orderlist-restapi
+spec:
+  ports:
+    - port: 5050
+      targetPort: 5050
+  selector:
+    app: fleet-infra-flask-orderlist-restapi-c813f882
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-infra-flask-orderlist-restapi-deployment-c8ecd625
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-infra-flask-orderlist-restapi-c813f882
+  template:
+    metadata:
+      labels:
+        app: fleet-infra-flask-orderlist-restapi-c813f882
+    spec:
+      containers:
+        - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/flask-orderlist-restapi:latest
+          name: app
+          ports:
+            - containerPort: 5050
