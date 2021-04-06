@@ -57,7 +57,7 @@ class OrderListPost(Resource):
                 'customer_id': orderlist.customer_id,
                 'product_id': orderlist.product_id,
                 'count': orderlist.count,
-                'status': orderlist.statuss
+                'status': orderlist.status
             }, 200
 
 
