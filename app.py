@@ -39,6 +39,24 @@ class OrderListIndex(Resource):
             )
         return ret, 200
 
+
+@api.route('/ordercount')
+class OrderListIndex(Resource):
+    def get(self):
+        ret = []
+        #res = db.session.query(OrderList).from_statement("SELECT status, count(status) FROM orderlist group by status")
+        sql = "SELECT status, count(status) as count FROM orderlist group by status"
+        res = db.engine.execute(sql)
+        for orderlist in res:
+            ret.append(
+                {
+                    'status': orderlist.status,
+                    'count': orderlist.count,
+                }
+            )
+        return ret, 200
+
+
 @api.route('/orderlist')
 @api.response(404, "Could not put orderlist")
 class OrderListPost(Resource):
