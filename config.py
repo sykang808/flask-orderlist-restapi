@@ -15,7 +15,7 @@ DATABASE_CONFIG = {
 db_info = {'dbname': 'orderlist'}
 def get_secret():
     
-    secret_name = "orderlist-secret"
+    secret_name = "order-secret"
     region_name = "us-west-2"
 
     # Create a Secrets Manager client
