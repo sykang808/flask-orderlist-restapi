@@ -15,6 +15,7 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app, resources={r'*': {'origins': '*'}})
 
+config.get_secret()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
     os.getenv('DB_USER' , config.DATABASE_CONFIG['DB_USER'] ),
     os.getenv('DB_PASSWORD', config.DATABASE_CONFIG['DB_PASSWORD']),
