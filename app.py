@@ -15,11 +15,9 @@ from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app)
+CORS(app, resources={r'*': {'origins': '*'}})
 xray_recorder.configure(service='flask-orderlist-restapi')
 XRayMiddleware(app, xray_recorder)
-api = Api(app)
-CORS(app, resources={r'*': {'origins': '*'}})
 
 config.get_secret()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
