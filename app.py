@@ -10,8 +10,15 @@ from flask import request # change
 from orderlist import *   
 from json import dumps 
 from flask_cors import CORS, cross_origin
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
+
+api = Api(app)
+CORS(app)
 app = Flask(__name__)
+xray_recorder.configure(service='flask-orderlist-restapi')
+XRayMiddleware(app, xray_recorder)
 api = Api(app)
 CORS(app, resources={r'*': {'origins': '*'}})
 
