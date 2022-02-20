@@ -1,8 +1,6 @@
 import os
 import config
 from flask import Flask
-import flask.scaffold
-flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api
 from flask_restx import Resource

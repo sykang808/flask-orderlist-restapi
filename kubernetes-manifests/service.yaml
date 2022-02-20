@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-restapi
+  name: flask-orderlist-restapi
   namespace: orderlist
 spec:
   selector:
-    app: flask-restapi
+    app: flask-orderlist-restapi
   type: LoadBalancer  
   ports:
    -  protocol: TCP

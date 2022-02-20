@@ -6,14 +6,14 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-restapi
+  name: flask-orderlist-restapi
   namespace: orderlist
   labels:
-    app: flask-restapi
+    app: flask-orderlist-restapi
 spec:
   selector:
     matchLabels:
-      app: flask-restapi
+      app: flask-orderlist-restapi
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -22,26 +22,26 @@ spec:
   template:
     metadata:
       labels:
-        app: flask-restapi
+        app: flask-orderlist-restapi
     spec:
       containers:
       - image: 566034038752.dkr.ecr.us-west-2.amazonaws.com/sykang/flask-orderlist-restapi:latest
         imagePullPolicy: Always
-        name: flask-restapi
+        name: flask-orderlist-restapi
         ports:
         - containerPort: 80
 ---          
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: flask-restapi
+  name: flask-orderlist-restapi
   namespace: orderlist
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: flask-restapi
-  minReplicas: 2
+    name: flask-orderlist-restapi
+  minReplicas: 1
   maxReplicas: 4
   metrics:
     - type: Resource
