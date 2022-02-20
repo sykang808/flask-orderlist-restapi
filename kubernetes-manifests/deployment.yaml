@@ -30,7 +30,6 @@ spec:
         name: flask-restapi
         ports:
         - containerPort: 80
-          protocol: TCP
 ---          
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
